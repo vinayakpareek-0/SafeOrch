@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+
+# Model weights
+models/**/*.pt
+models/**/*.onnx
+models/**/*.engine
+
+# Data (large files)
+data/raw/
+data/processed/
+
+# Environment
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+docker/.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ChromaDB local storage
+chroma_db/
+project-desc.md
