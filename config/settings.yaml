@@ -1,0 +1,51 @@
+# SafeOrch - centralized config :)
+
+detection:
+  model_path: "models/yolo_ppe_v11/weights/best.pt"
+  model_variant: "yolo11n"
+  confidence_threshold: 0.5
+  iou_threshold: 0.7
+  imgsz: 640
+  frame_extraction_fps: 1
+
+  # classes the model was trained on (index order from training)
+  class_names:
+    - "Ear Protectors"
+    - "Glasses"
+    - "Gloves"
+    - "Helmet"
+    - "Mask"
+    - "Person"
+    - "Safety Shoes"
+    - "Vest"
+    - "Without Ear Protectors"
+    - "Without Glass"
+    - "Without Glove"
+    - "Without Helmet"
+    - "Without Mask"
+    - "Without Safety Shoes"
+    - "Without Vest"
+
+  # classes we actually care about for violation detection
+  violation_classes:
+    - "Without Helmet"
+    - "Without Vest"
+    - "Without Safety Shoes"
+    - "Without Glove"
+    - "Without Glass"
+    - "Without Mask"
+    - "Without Ear Protectors"
+
+rag: 
+  chroma_db_path: "chroma_db/"
+  chunk_size: 500
+  chunk_overlap: 100
+  top_k:5
+
+agents:
+  llm_provider: "groq"
+  groq_model:"llama-3.3-70b-versatile"
+  risk_threshold:
+    alert: [3,5]
+    remediate: [6,7]
+    auto_stop: [8,10]

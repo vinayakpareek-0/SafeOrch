@@ -9,10 +9,12 @@ build/
 venv/
 env/
 
-# Model weights
+# Model weights and training files
 models/**/*.pt
 models/**/*.onnx
 models/**/*.engine
+models/**/*.jpg
+models/**/*.png
 
 # Data (large files)
 data/raw/
