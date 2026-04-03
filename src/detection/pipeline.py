@@ -8,7 +8,7 @@ from .schemas import PipelineResult
 
 def load_config():
     """load settings from config/settings.yaml"""
-    config_path = Path(__file__).parent.parent.parent/"config"/"settings.yaml"
+    config_path = Path(__file__).parent.parent/"config"/"settings.yaml"
     with open(config_path ) as f:
         return yaml.safe_load(f)
 
@@ -19,7 +19,7 @@ def run_pipeline(video_path:str)->dict:
 
     frames=extract_frames(video_path,fps=det_config["frame_extraction_fps"])
 
-    model_path= Path(__file__).parent.parent.parent / det_config["model_path"]
+    model_path= Path(__file__).parent.parent / det_config["model_path"]
     conf= det_config["confidence_threshold"]
     detector = PPEDetector(str(model_path), confidence=conf)
 

@@ -6,3 +6,12 @@ chromadb
 streamlit
 python-dotenv
 pyyaml
+opencv-python
+langchain-groq
+langchain-community
+langchain-huggingface
+sentence-transformers
+pypdf
+langchain-text-splitters
+beautifulsoup4
+requests
