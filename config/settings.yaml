@@ -36,16 +36,16 @@ detection:
     - "Without Mask"
     - "Without Ear Protectors"
 
-rag: 
+rag:
   chroma_db_path: "chroma_db/"
   chunk_size: 500
   chunk_overlap: 100
-  top_k:5
+  top_k: 5
 
 agents:
   llm_provider: "groq"
-  groq_model:"llama-3.3-70b-versatile"
+  groq_model: "llama-3.3-70b-versatile"
   risk_threshold:
-    alert: [3,5]
-    remediate: [6,7]
-    auto_stop: [8,10]
+    alert: [3, 5]
+    remediate: [6, 7]
+    auto_stop: [8, 10]

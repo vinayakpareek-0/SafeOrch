@@ -18,6 +18,7 @@ models/**/*.png
 
 # Data (large files)
 data/raw/
+data/test_data/
 data/processed/
 
 # Environment
