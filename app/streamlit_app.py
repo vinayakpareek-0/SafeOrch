@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.detection.detector import PPEDetector
 from src.agents.graph import build_safety_graph
+from src.reporting.pdf_generator import generate_report
 
 st.set_page_config(page_title="SafeOrch", page_icon="🦺", layout="wide")
 
@@ -19,7 +20,7 @@ st.set_page_config(page_title="SafeOrch", page_icon="🦺", layout="wide")
 @st.cache_resource
 def load_detector():
     model_path = Path(__file__).parent.parent / "models" / "yolo_ppe_v11" / "weights" / "best.pt"
-    return PPEDetector(str(model_path), confidence=0.5)
+    return PPEDetector(str(model_path), confidence=0.35)
 
 @st.cache_resource
 def load_graph():
@@ -82,6 +83,14 @@ def show_results(annotated, detections, agent_result):
             st.write("**OSHA Citations:**", ", ".join(agent_result.get("osha_citations", [])))
         else:
             st.success("✅ No violations detected!")
+        if agent_result:
+            pdf_bytes = generate_report(annotated, detections, agent_result)
+            st.download_button(
+                label="📄 Download PDF Report",
+                data=pdf_bytes,
+                file_name=f"safeorch_report_{int(__import__('time').time())}.pdf",
+                mime="application/pdf",
+            )
 
 
 #  MAIN APP 
@@ -131,3 +140,8 @@ with tab2:
         with st.spinner("Analyzing..."):
             annotated, detections, agent_result = process_frame(frame, detector, graph)
         show_results(annotated, detections, agent_result)
+
+with st.sidebar:
+    st.header("⚙️ Settings")
+    confidence = st.slider("Detection Confidence", 0.1, 1.0, 0.3, 0.05)
+    detector.model.conf = confidence
