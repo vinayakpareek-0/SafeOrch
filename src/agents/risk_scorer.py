@@ -3,11 +3,12 @@ import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from src.rag.retriever import OSHARetriever
+from src.prediction.predictor import InjuryPredictor
 
 load_dotenv()
 
 
-def build_risk_prompt(detections: list[dict], osha_context: str) -> str:
+def build_risk_prompt(detections: list[dict], osha_context: str, injury_prob: float) -> str:    
     """Build the prompt for the risk scorer."""
     violations = [d for d in detections if "Without" in d.get("class_name", "")]
     
@@ -21,6 +22,9 @@ provide a risk score from 1-10 and explain your reasoning.
 
 ## Relevant OSHA Regulations
 {osha_context}
+
+## Injury Prediction Model
+Based on historical OSHA incident data, the predicted probability of severe injury (amputation/loss) for this scenario is:{injury_prob:.1%}
 
 ## Instructions
 - Score 1-3: Minor (e.g., single missing glove, low-risk area)
@@ -36,13 +40,16 @@ Respond in this exact JSON format:
 def risk_scorer_node(state: dict) -> dict:
     """LangGraph node: score risk from detections + OSHA context."""
     retriever = OSHARetriever()
-    
+    predictor = InjuryPredictor()
+
     # build query from violation types
     violation_types = [d["class_name"] for d in state["detections"] if "Without" in d.get("class_name", "")]
     query = f"PPE violations: {', '.join(set(violation_types))}" if violation_types else "general PPE requirements"
     
     osha_context = retriever.query(query)
-    prompt = build_risk_prompt(state["detections"], osha_context)
+    event_type = "Struck by falling object or equipment, n.e.c." if violation_types else "Other"
+    injury_prob = predictor.predict(event_type=event_type, source="Nonclassifiable")
+    prompt = build_risk_prompt(state["detections"], osha_context, injury_prob)
 
     llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
     response = llm.invoke(prompt)
@@ -50,7 +57,6 @@ def risk_scorer_node(state: dict) -> dict:
     try:
         result = json.loads(response.content)
     except json.JSONDecodeError:
-        # fallback if LLM doesn't return clean JSON
         result = {"risk_score": 5, "risk_reasoning": response.content, "osha_citations": []}
 
     return {

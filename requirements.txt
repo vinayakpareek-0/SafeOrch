@@ -15,3 +15,8 @@ pypdf
 langchain-text-splitters
 beautifulsoup4
 requests
+pandas
+scikit-learn
+xgboost
+matplotlib
+seaborn

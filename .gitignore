@@ -15,6 +15,7 @@ models/**/*.onnx
 models/**/*.engine
 models/**/*.jpg
 models/**/*.png
+models/**/*.pkl
 
 # Data (large files)
 data/raw/
